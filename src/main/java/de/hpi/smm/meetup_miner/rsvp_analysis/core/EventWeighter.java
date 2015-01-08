@@ -1,4 +1,4 @@
-package de.hpi.smm.meetup_miner.rsvp_analysis;
+package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 import uk.ac.shef.wit.simmetrics.similaritymetrics.AbstractStringMetric;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;

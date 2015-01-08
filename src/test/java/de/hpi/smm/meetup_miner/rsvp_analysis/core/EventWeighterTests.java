@@ -1,4 +1,4 @@
-package de.hpi.smm.meetup_miner.rsvp_analysis;
+package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 import org.junit.Before;
 import org.junit.Test;

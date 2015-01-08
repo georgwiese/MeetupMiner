@@ -1,4 +1,4 @@
-package de.hpi.smm.meetup_miner.rsvp_analysis;
+package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
