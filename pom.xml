@@ -23,13 +23,18 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>uk.ac.shef.wit.simmetrics</groupId>
       <artifactId>simmetrics</artifactId>
       <version>1.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
     </dependency>
   </dependencies>
 </project>

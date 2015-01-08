@@ -11,7 +11,7 @@ public class EventWeighter {
 	
 	/** Half time of time similarity in ms */
 	private static final long TIME_SIMILARITY_HALF_TIME =
-			30 * 24 * 60 * 60 * 1000; // 1 month
+			30L * 24L * 60L * 60L * 1000L; // 1 month
 	private static final double SAME_TIME_CREATED_BOOST = 0.1;
 	
 	private Event baseEvent;
