@@ -11,10 +11,12 @@ import com.google.common.collect.Collections2;
  */
 public class EventNeighborhood {
 	
+	private Event baseEvent;
 	private EventWeighter eventWeighter;
 	private Collection<EventInfo> eventInfos;
 	
 	public EventNeighborhood(Event baseEvent, Iterable<Event> events) {
+		this.baseEvent = baseEvent;
 		eventWeighter = new EventWeighter(baseEvent);
 		
 		eventInfos = new ArrayList<EventInfo>();
@@ -35,6 +37,32 @@ public class EventNeighborhood {
 				return mapFunction.apply(eventInfo.event) * eventInfo.weight;
 			}
 		});
+	}
+	
+	/**
+	 * Return the weighted average of whatever mapFunction maps the neighborhood to.
+	 * If the neighborhood is empty, return mapFunction.apply(baseEvent).
+	 */
+	public double weightedAverage(final Function<Event, Double> mapFunction) {
+		if (eventInfos.isEmpty()) {
+			return mapFunction.apply(baseEvent);
+		}
+		
+		Collection<Double> weightedValues = mapWeighted(mapFunction);
+		
+		double sum = 0;
+		for (double value : weightedValues) {
+			sum += value;
+		}
+		return sum / getWeightSum();
+	}
+	
+	public double getWeightSum() {
+		double sum = 0;
+		for (EventInfo eventInfo : eventInfos) {
+			sum += eventInfo.weight;
+		}
+		return sum;
 	}
 	
 	private class EventInfo {

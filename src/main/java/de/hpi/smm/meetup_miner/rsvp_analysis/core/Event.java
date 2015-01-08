@@ -2,7 +2,6 @@ package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 /**
  * Represents an Event
- *
  */
 public class Event {
 
@@ -26,6 +25,11 @@ public class Event {
 	 * @return createdTime
 	 */
 	public long getCreatedTime() {
+		// TODO: Implement
+		return 0;
+	}
+	
+	public int getYesRsvpCount() {
 		// TODO: Implement
 		return 0;
 	}
