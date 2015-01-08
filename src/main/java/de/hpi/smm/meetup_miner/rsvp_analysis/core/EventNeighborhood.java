@@ -2,6 +2,7 @@ package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -25,6 +26,14 @@ public class EventNeighborhood {
 				eventInfos.add(new EventInfo(event, eventWeighter.computeWeight(event)));
 			}
 		}
+	}
+	
+	public List<Double> getWeights() {
+		List<Double> weights = new ArrayList<Double>();
+		for (EventInfo info : eventInfos) {
+			weights.add(info.weight);
+		}
+		return weights;
 	}
 	
 	/**
