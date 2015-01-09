@@ -21,14 +21,11 @@ public class Secrets {
   public static String HANA_PASSWORD = "<PASSWORD>";
   
   
-  public static String[] MEETUP_API_KEYS = new String[]{
-    "453d2b4087763127a61255d3d4132a",
-    "4037552f6134271f2d5f4930bc2432",
-    "21193e701e6363625f7c59315d77942",
-    "55656a1e2d285b2b3b2b607e537bd3f"
-  };
+  public static String[] MEETUP_API_KEYS = new String[]{...};
 }
 ```
+
+Project members can find an up-to-date version [here](https://docs.google.com/document/d/1ha4e_3WAdv7tzxFIKzCpIkE3jDdZSrEo4z_hMgFqMkA/edit).
 
 ### Installing new JAR-Dependencies
 
