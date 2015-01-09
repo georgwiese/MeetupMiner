@@ -1,5 +1,8 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Represents an Event
  */
@@ -32,5 +35,10 @@ public class Event {
 	public int getYesRsvpCount() {
 		// TODO: Implement
 		return 0;
+	}
+	
+	public Set<Integer> getYesMemberIds() {
+		// TODO: Implement
+		return new HashSet<>();
 	}
 }
