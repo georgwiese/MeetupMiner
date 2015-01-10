@@ -5,7 +5,14 @@ The algorithms are developed as part of the [Social Media Mining](http://hpi.de/
 
 ## Development
 
-### Set up your Secrets.java
+### Setup
+
+#### Libs
+
+- You'll need to add a `com.sap.db.jdbc.hana_1.0.0.SNAPSHOT.jar` to the `lib` folder that should contain the HANA jDBC driver. Project members can find a copy [here](https://docs.google.com/file/d/0B4gX4c6gHS2VSHQxaFE2ZG5LSk0).
+- Install the libs to your local repository by running `./setup_libs.py`.
+
+#### Secrets.java
 
 You'll need to add a `Secrets.java` file that contains passwords and connection info. It should look like that:
 
@@ -29,13 +36,9 @@ Project members can find an up-to-date version [here](https://docs.google.com/do
 
 ### Installing new JAR-Dependencies
 
-In the case that a dependency is not hosted by any Maven repository, it should be added by the following command, as recommended in [this post](http://stackoverflow.com/a/7623805):
-
-```bash
-mvn install:install-file -DlocalRepositoryPath=libs -DcreateChecksum=true -Dpackaging=jar -Dfile=<JAR file> -DgroupId=<packageName> -DartifactId=<artefactId> -Dversion=<version>
-```
-
-You can then commit any changes to the `libs/` directory and add the dependency to the `pom.xml`.
+In the case that a dependency is not hosted by any Maven repository, it can be added to the `lib` directory.
+It has to comply to a certain naming scheme, please refer to the readme of the [install-to-project-repo](https://github.com/nikita-volkov/install-to-project-repo) for details.
+It can then be installed by running `./setup_libs.py`.
 
 ### Connecting to the Database
 
