@@ -2,7 +2,10 @@
 .project
 .settings/
 
+repo/
+
 src/main/java/de/hpi/smm/meetup_miner/config/Secrets.java
+lib/com.sap.db.jdbc.hana_1.0.0.SNAPSHOT.jar
 
 *.class
 
@@ -10,7 +13,6 @@ src/main/java/de/hpi/smm/meetup_miner/config/Secrets.java
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
