@@ -11,7 +11,7 @@ import java.util.List;
 public class TfIdfAdapter {
 	
 	public static final double THRESHOLD = 0.5;
-	public static final String QUERY = "SELECT ta_token, ta_tfidf FROM meetup.test WHERE id = %d and ta_tfidf >= %s ORDER BY ta_tfidf";
+	public static final String QUERY = "SELECT ta_token, ta_tfidf FROM meetup.test WHERE id = ? and ta_tfidf >= ? ORDER BY ta_tfidf";
 	
 	private Connection connection;
 
@@ -20,30 +20,27 @@ public class TfIdfAdapter {
 		this.connection = connection;
 	}
 
-	public HashMap<Integer, List<String>> getKeywords(int fromId, int toId) {
-		HashMap<Integer, List<String>> result = new HashMap<>();
-		for (int id = fromId; id <= toId; id++) {
+	public HashMap<String, List<String>> getKeywords(Iterable<String> ids) {
+		HashMap<String, List<String>> result = new HashMap<>();
+		for (String id : ids) {
 			result.put(id, getKeywordsFor(id));
 		}
 		return result;
 	}
 	
-	public ArrayList<String> getKeywordsFor(int id) {
-		String query = String.format(QUERY, id, getFormatedThreshold());
+	public ArrayList<String> getKeywordsFor(String id) {
 		ArrayList<String> results = new ArrayList<>();
 		
 		try {
-			PreparedStatement statement = connection.prepareStatement(query);
+			PreparedStatement statement = connection.prepareStatement(QUERY);
+			statement.setString(1, id);
+			statement.setDouble(2, THRESHOLD);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				results.add(resultSet.getString(1));
 			}
 		} catch (SQLException e) {}
 		return results;
-	}
-	
-	private static String getFormatedThreshold() {
-		return Double.toString(THRESHOLD);
 	}
 	
 }
