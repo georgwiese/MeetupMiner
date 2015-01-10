@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class DbExample {
 
 	public static void main (String[]  args) throws ClassNotFoundException, SQLException {
-		DatabaseConnector.setup(4);
+		DatabaseConnector.setup();
 		Connection con = DatabaseConnector.getNewConnection();
 		String query = "SELECT COUNT(*) FROM GROUPS WHERE crawled_city = 'chicago'";
 		PreparedStatement stmt = con.prepareStatement(query);
