@@ -22,8 +22,9 @@ public class Event {
 	private long time;	
 	
 	// Values that are calculated
-	public float expectedMemberLoyality;
-	public float expectedSize;
+	public float expectedMemberLoyality = -Float.MAX_VALUE;
+	public float expectedSize = -Float.MAX_VALUE;
+	public float expectedTrend = -Float.MAX_VALUE;
 	
 	public Event(String id, String title, int yesRSVPcount, long createdTime, long time) {
 		this.id = id;
@@ -95,5 +96,71 @@ public class Event {
 			}		
 		}
 		return result;
+	}
+	
+	public void saveToDatabase() {
+		String query = getSaveQuery();
+		Connection con = null;
+		try {
+			con = DatabaseConnector.getNewConnection();
+			if (con != null) {
+				PreparedStatement stmt = con.prepareStatement(query);
+				setValues(stmt);
+				stmt.execute();
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			if (con != null)
+				try {
+					DatabaseConnector.closeConnection(con);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private String getSaveQuery() {
+		StringBuilder queryBuilder = new StringBuilder("UPSERT Event_Predictions (id,");
+		if (expectedMemberLoyality > -Float.MAX_VALUE)
+			queryBuilder.append("expected_Member_Loyality,");
+		if (expectedSize > -Float.MAX_VALUE)
+			queryBuilder.append("expected_Size,");
+		if (expectedTrend > -Float.MAX_VALUE)
+			queryBuilder.append("expected_Trend,");
+		queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+		queryBuilder.append(") VALUES (?,");
+		if (expectedMemberLoyality > -Float.MAX_VALUE)
+			queryBuilder.append("?,");
+		if (expectedSize > -Float.MAX_VALUE)
+			queryBuilder.append("?,");
+		if (expectedTrend > -Float.MAX_VALUE)
+			queryBuilder.append("?,");
+		queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+		queryBuilder.append(") WHERE id = ?");
+		return queryBuilder.toString();
+	}
+	
+	private void setValues(PreparedStatement stmt) {
+		try {
+			stmt.setString(1, id);
+			int i = 2;
+			if (expectedMemberLoyality > -Float.MAX_VALUE) {
+				stmt.setFloat(i, expectedMemberLoyality);
+				i += 1;
+			}
+			if (expectedSize > -Float.MAX_VALUE) {
+				stmt.setFloat(i, expectedSize);
+				i += 1;
+			}
+			if (expectedTrend > -Float.MAX_VALUE) {
+				stmt.setFloat(i, expectedTrend);
+				i += 1;
+			}
+			stmt.setString(i, id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
