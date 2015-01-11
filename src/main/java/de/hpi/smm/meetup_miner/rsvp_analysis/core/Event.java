@@ -7,11 +7,21 @@ import java.util.Set;
  * Represents an Event
  */
 public class Event {
-
-
+	
+	private String title;
+	private int yesRSVPs;
+	private long createdTime;
+	private long time;
+	
+	public Event(String title, int yesRSVPcount, long createdTime, long time) {
+		this.title = title;
+		this.yesRSVPs = yesRSVPcount;
+		this.createdTime = createdTime;
+		this.time = time;
+	}
+	
 	public String getTitle() {
-		// TODO: Implement
-		return "";
+		return title;
 	}
 	
 	/**
@@ -19,8 +29,7 @@ public class Event {
 	 * @return time
 	 */
 	public long getTime() {
-		// TODO: Implement
-		return 0;
+		return time;
 	}
 
 	/**
@@ -28,13 +37,11 @@ public class Event {
 	 * @return createdTime
 	 */
 	public long getCreatedTime() {
-		// TODO: Implement
-		return 0;
+		return createdTime;
 	}
 	
 	public int getYesRsvpCount() {
-		// TODO: Implement
-		return 0;
+		return yesRSVPs;
 	}
 	
 	public Set<Integer> getYesMemberIds() {
