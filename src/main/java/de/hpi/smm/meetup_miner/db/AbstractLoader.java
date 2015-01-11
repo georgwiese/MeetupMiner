@@ -19,11 +19,11 @@ public abstract class AbstractLoader<T> {
 	}
 
 	protected abstract T extractEntity(ResultSet resultSet) throws SQLException;
-	protected abstract PreparedStatement getStatement();
+	protected abstract PreparedStatement getStatement(String selectionAttributeValue);
 	
-	public List<T> load() {
+	public List<T> load(String selectionAttributeValue) {
 		List<T> result = new ArrayList<>();
-		PreparedStatement statement = getStatement();
+		PreparedStatement statement = getStatement(selectionAttributeValue);
 		try {
 			if (statement.execute()) {
 				ResultSet rs = statement.getResultSet();

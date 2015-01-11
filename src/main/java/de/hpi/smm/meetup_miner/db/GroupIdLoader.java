@@ -9,9 +9,8 @@ public class GroupIdLoader extends AbstractLoader<Integer> {
 
 	String crawledCity;
 	
-	public GroupIdLoader(Connection connection, String crawledCity) {
+	public GroupIdLoader(Connection connection) {
 		super(connection);	
-		this.crawledCity = crawledCity;
 	}
 
 	@Override
@@ -20,12 +19,12 @@ public class GroupIdLoader extends AbstractLoader<Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getStatement() {
+	protected PreparedStatement getStatement(String selectionAttributeValue) {
 		String query = "SELECT id FROM Groups WHERE crawled_city = ?";
 		
 		try {
 			PreparedStatement statement = connection.prepareStatement(query);
-			statement.setString(1, crawledCity);
+			statement.setString(1, selectionAttributeValue);
 			return statement;
 		} catch (SQLException e) {
 			e.printStackTrace();
