@@ -8,15 +8,11 @@ import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
 
 public class TrendlineSlope implements AbstractFeature {
 	
-	private class CreationTimeComparator implements Comparator<Event> {
+	private class TimeComparator implements Comparator<Event> {
 
 		@Override
 		public int compare(Event o1, Event o2) {
-			if (o1.getCreatedTime() < o2.getCreatedTime())
-				return -1;
-			if (o1.getCreatedTime() > o2.getCreatedTime())
-				return 1;			
-			return 0;
+			return Float.compare(o1.getTime(), o2.getTime());			
 		}
 		
 	}
@@ -46,7 +42,7 @@ public class TrendlineSlope implements AbstractFeature {
 		for (Event event : events) {
 			result.add(event);
 		}
-		Collections.sort(result, new CreationTimeComparator());		
+		Collections.sort(result, new TimeComparator());
 		return result;
 	}
 
