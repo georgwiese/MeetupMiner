@@ -19,7 +19,8 @@ public class Event {
 	private String title;
 	private int yesRSVPs;
 	private long createdTime;
-	private long time;	
+	private long time;
+	private Set<Integer> yesMemberIds = null;
 	
 	// Values that are calculated
 	public float expectedMemberLoyality = -Float.MAX_VALUE;
@@ -67,6 +68,13 @@ public class Event {
 	 * @return
 	 */
 	public Set<Integer> getYesMemberIds() {
+		if (yesMemberIds == null) {
+			yesMemberIds = downloadYesMemberIds();
+		}
+		return yesMemberIds;
+	}
+	
+	private Set<Integer> downloadYesMemberIds() {
 		HashSet<Integer> result = new HashSet<Integer>();
 		Connection connection = null;
 		PreparedStatement stmt = null;
