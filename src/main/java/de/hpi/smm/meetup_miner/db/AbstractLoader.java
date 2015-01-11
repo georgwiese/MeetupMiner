@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class AbstractLoader {
+public abstract class AbstractLoader<T> {
 
 	Connection connection;
 	
@@ -16,20 +18,25 @@ public abstract class AbstractLoader {
 		this.connection = connection;		
 	}
 
-	protected abstract void receiveTuple(ResultSet resultSet) throws SQLException;
+	protected abstract T extractEntity(ResultSet resultSet) throws SQLException;
+	protected abstract PreparedStatement getStatement();
 	
-	protected void load(PreparedStatement statement) {
+	public List<T> load() {
+		List<T> result = new ArrayList<>();
+		PreparedStatement statement = getStatement();
 		try {
 			if (statement.execute()) {
 				ResultSet rs = statement.getResultSet();
 				while (rs.next()) {
-					receiveTuple(rs);
+					result.add(extractEntity(rs));
 				}
 				rs.close();
 			}					
 			statement.close();
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return result;
 		} finally {
 			if (statement != null) {
 				try {

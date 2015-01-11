@@ -4,35 +4,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-public class GroupIdLoader extends AbstractLoader {
+public class GroupIdLoader extends AbstractLoader<Integer> {
 
-	Connection connection;
-	List<Integer> groupIds;
+	String crawledCity;
 	
-	public GroupIdLoader(Connection connection) {
+	public GroupIdLoader(Connection connection, String crawledCity) {
 		super(connection);	
-	}
-	
-	/**
-	 * Get all group ids for a crawledCity
-	 * @param crawledCity
-	 * @return List of group ids
-	 */
-	public List<Integer> loadGroupIds(String crawledCity) {
-		groupIds = new ArrayList<>();
-		load(getStatement(crawledCity));
-		return groupIds;
+		this.crawledCity = crawledCity;
 	}
 
 	@Override
-	protected void receiveTuple(ResultSet resultSet) throws SQLException {
-		groupIds.add(resultSet.getInt("ID"));
+	protected Integer extractEntity(ResultSet resultSet) throws SQLException {
+		return resultSet.getInt("ID");
 	}
 
-	protected PreparedStatement getStatement(String crawledCity) {
+	@Override
+	protected PreparedStatement getStatement() {
 		String query = "SELECT id FROM Groups WHERE crawled_city = ?";
 		
 		try {
