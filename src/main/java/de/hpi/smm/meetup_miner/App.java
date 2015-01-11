@@ -19,7 +19,8 @@ public class App
     	EventLoader loader = new EventLoader(DatabaseConnector.getNewConnection());
     	ArrayList<Event> events = loader.loadEventsForGroup("16037582");
     	for (Event event : events) {
-			System.out.println(event.getTitle() + " - " + event.getTime());
+			System.out.println(event.getID() + " - " + event.getTitle() + " - " + event.getTime());
+			System.out.println(event.getYesMemberIds());
 		}
         System.out.println( "Hello World!" );
     }
