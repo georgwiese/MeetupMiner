@@ -20,6 +20,7 @@ public class Event {
 	private int yesRSVPs;
 	private long createdTime;
 	private long time;
+	private String status;
 	private Set<Integer> yesMemberIds = null;
 	
 	// Values that are calculated
@@ -27,12 +28,14 @@ public class Event {
 	public float expectedSize = -Float.MAX_VALUE;
 	public float expectedTrend = -Float.MAX_VALUE;
 	
-	public Event(String id, String title, int yesRSVPcount, long createdTime, long time) {
+	public Event(
+			String id, String title, int yesRSVPcount, long createdTime, long time, String status) {
 		this.id = id;
 		this.title = title;
 		this.yesRSVPs = yesRSVPcount;
 		this.createdTime = createdTime;
 		this.time = time;
+		this.status = status;
 	}
 	
 	public String getID() {
@@ -61,6 +64,10 @@ public class Event {
 	
 	public int getYesRsvpCount() {
 		return yesRSVPs;
+	}
+	
+	public String getStatus() {
+		return status;
 	}
 	
 	/** 
