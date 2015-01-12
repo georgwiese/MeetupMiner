@@ -10,7 +10,6 @@ import de.hpi.smm.meetup_miner.db.DatabaseConnector;
 public class TextAnalyzer {
 	
 	public TextAnalyzer() {
-		DatabaseConnector.setup();
 	}
 	
 	private String getDescriptionFor(String id) {
