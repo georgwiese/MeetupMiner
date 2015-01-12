@@ -18,8 +18,6 @@ public class RsvpAnalysisMain {
 	private static final String CITY = "chicago";
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-
-    	DatabaseConnector.setup(4);
     	Connection connection = DatabaseConnector.getNewConnection();
     	Connection saveConnection = DatabaseConnector.getNewConnection();
     	GroupIdLoader groupIdLoader = new GroupIdLoader(connection);

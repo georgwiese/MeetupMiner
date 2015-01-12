@@ -10,8 +10,8 @@ import de.hpi.smm.meetup_miner.config.Secrets;
 
 public class DatabaseConnector {
 
-    private static ArrayList<Connection> connections;
-    public static DbConnectionParameters connectionParameters;
+    private static ArrayList<Connection> connections = new ArrayList<Connection>();
+    public static DbConnectionParameters connectionParameters = new DbConnectionParameters();
 
     public static class DbConnectionParameters {
         public String host = Secrets.HANA_IP_VPN;
@@ -109,11 +109,6 @@ public class DatabaseConnector {
 
     public static void setup(DbConnectionParameters connectionParameters) {
         DatabaseConnector.connectionParameters = connectionParameters;
-        DatabaseConnector.connections = new ArrayList<>();
-    }
-
-    public static void setup() {
-    	setup(new DbConnectionParameters());
     }
     
     public static Connection getNewConnection() throws ClassNotFoundException, SQLException {    	
