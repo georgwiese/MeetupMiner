@@ -20,7 +20,7 @@ public class GroupIdLoader extends AbstractLoader<Integer> {
 
 	@Override
 	protected PreparedStatement getStatement(String selectionAttributeValue) {
-		String query = "SELECT id FROM Groups WHERE crawled_city = ?";
+		String query = "SELECT distinct(groups.id) FROM Groups JOIN Events On groups.id = events.group_id WHERE crawled_city = ? AND events.status = 'upcoming'";
 		
 		try {
 			PreparedStatement statement = connection.prepareStatement(query);
