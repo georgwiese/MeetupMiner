@@ -1,5 +1,9 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import uk.ac.shef.wit.simmetrics.similaritymetrics.AbstractStringMetric;
 import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
 
@@ -13,6 +17,10 @@ public class EventWeighter {
 	private static final long TIME_SIMILARITY_HALF_TIME =
 			30L * 24L * 60L * 60L * 1000L; // 1 month
 	private static final double SAME_TIME_CREATED_BOOST = 0.1;
+	
+	private static final int MAX_CACHE_SIZE = 1024 * 1024;
+	private static ConcurrentHashMap<Pair<String, String>, Double>
+			stringSimilarityCache = new ConcurrentHashMap<>();
 	
 	private Event baseEvent;
 	private AbstractStringMetric stringMetric;
@@ -30,8 +38,18 @@ public class EventWeighter {
 	}
 	
 	private double getTitleSimilarity(Event event) {
-		return stringMetric.getSimilarity(
-				baseEvent.getTitle(), event.getTitle());
+		String title1 = baseEvent.getTitle();
+		String title2 = event.getTitle();
+		Pair<String, String> cacheKey = Pair.of(title1, title2);
+		
+		if (stringSimilarityCache.size() > MAX_CACHE_SIZE) {
+			stringSimilarityCache.clear();
+		}
+		if (!stringSimilarityCache.containsKey(cacheKey)) {
+			double similarity = stringMetric.getSimilarity(title1, title2);
+			stringSimilarityCache.put(cacheKey, similarity);
+		}
+		return stringSimilarityCache.get(cacheKey);
 	}
 	
 	private double getTimeSimilarity(Event event) {
