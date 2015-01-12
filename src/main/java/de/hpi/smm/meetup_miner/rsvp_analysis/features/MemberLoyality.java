@@ -16,13 +16,12 @@ import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventNeighborhood;
  */
 public class MemberLoyality implements AbstractFeature {
 	
-	Event currentBaseEvent;
+	Set<Integer> baseEventMembers;
 	
 	private Function<Event, Double> percentageMemberInCommon =
 			new Function<Event, Double>() {
 				@Override
 				public Double apply(Event event) {
-					Set<Integer> baseEventMembers = currentBaseEvent.getYesMemberIds();
 					return (double) Sets.intersection(
 							event.getYesMemberIds(), baseEventMembers).size() /
 							baseEventMembers.size();
@@ -31,7 +30,11 @@ public class MemberLoyality implements AbstractFeature {
 
 	@Override
 	public double forEvent(Event event, Iterable<Event> pastEvents) {
-		currentBaseEvent = event;
+		baseEventMembers = event.getYesMemberIds();
+		if (baseEventMembers.size() == 0) {
+			return 0.5;
+		}
+		
 		List<Event> relativePastEvents = getRelativePastEvents(event, pastEvents);
 		EventNeighborhood neighborhood = new EventNeighborhood(event, relativePastEvents);
 		return neighborhood.weightedAverage(percentageMemberInCommon);
