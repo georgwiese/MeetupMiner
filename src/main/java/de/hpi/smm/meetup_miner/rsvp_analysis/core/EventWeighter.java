@@ -17,6 +17,7 @@ public class EventWeighter {
 	private static final long TIME_SIMILARITY_HALF_TIME =
 			30L * 24L * 60L * 60L * 1000L; // 1 month
 	private static final double SAME_TIME_CREATED_BOOST = 0.1;
+	private static final double MIN_TITLE_SIMILARITY = 0.2;
 	
 	private static final int MAX_CACHE_SIZE = 1024 * 1024;
 	private static ConcurrentHashMap<Pair<String, String>, Double>
@@ -49,7 +50,7 @@ public class EventWeighter {
 			double similarity = stringMetric.getSimilarity(title1, title2);
 			stringSimilarityCache.put(cacheKey, similarity);
 		}
-		return stringSimilarityCache.get(cacheKey);
+		return Math.max(MIN_TITLE_SIMILARITY, stringSimilarityCache.get(cacheKey));
 	}
 	
 	private double getTimeSimilarity(Event event) {
