@@ -35,7 +35,11 @@ public class TrendlineSlope implements AbstractFeature {
 		b = b1 * b2;
 		c *= events.size();
 		d *= d;
-		return (a - b) / (c - d);
+		float result = (a - b) / (c - d);
+		if (Float.isInfinite(result)) {
+			result = Float.MAX_VALUE;
+		}
+		return result;
 	}
 	
 	private ArrayList<Event> createOrderedList(Iterable<Event> events) {
