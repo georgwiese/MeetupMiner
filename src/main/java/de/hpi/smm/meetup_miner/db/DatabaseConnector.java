@@ -11,7 +11,6 @@ import de.hpi.smm.meetup_miner.config.Secrets;
 public class DatabaseConnector {
 
     private static ArrayList<Connection> connections;
-    private static int maxNumberOfConnections;
     public static DbConnectionParameters connectionParameters;
 
     public static class DbConnectionParameters {
@@ -108,19 +107,18 @@ public class DatabaseConnector {
         }
     }
 
-    public static void setup(DbConnectionParameters connectionParameters, int maximumNumberOfConnections) {
+    public static void setup(DbConnectionParameters connectionParameters) {
         DatabaseConnector.connectionParameters = connectionParameters;
         DatabaseConnector.connections = new ArrayList<>();
-        DatabaseConnector.maxNumberOfConnections = maximumNumberOfConnections;
     }
 
-    public static void setup(int maximumNumberOfConnections) {
-    	setup(new DbConnectionParameters(), maximumNumberOfConnections);
+    public static void setup() {
+    	setup(new DbConnectionParameters());
     }
     
     public static Connection getNewConnection() throws ClassNotFoundException, SQLException {    	
-        if (connectionParameters == null || connections.size() >= maxNumberOfConnections) {
-            throw new IllegalStateException("Can't create new connection, have " + connections.size());
+        if (connectionParameters == null) {
+            throw new IllegalStateException("Can't create new connection, have no connection parameters!");
         }
         Class.forName("com.sap.db.jdbc.Driver");
         String url;
@@ -134,7 +132,7 @@ public class DatabaseConnector {
         }
 
         Statement schemaStmt = connection.createStatement();
-        schemaStmt.execute("SET SCHEMA MEETUP");
+        schemaStmt.execute("SET SCHEMA " + connectionParameters.defaultSchema);
         
         return connection;
     }
