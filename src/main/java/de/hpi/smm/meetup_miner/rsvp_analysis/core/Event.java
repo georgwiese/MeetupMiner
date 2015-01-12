@@ -99,29 +99,25 @@ public class Event {
 		return ImmutableSet.copyOf(loader.load(id));
 	}
 	
-	public void saveToDatabase() {
+	public void saveToDatabase(Connection connection) {
 		String query = getSaveQuery();
-		Connection con = null;
+		PreparedStatement stmt = null;
 		try {
-			con = DatabaseConnector.getNewConnection();
-			if (con != null) {
-				PreparedStatement stmt = con.prepareStatement(query);
-				setValues(stmt);
-				stmt.execute();
-			}
-		} catch (ClassNotFoundException | SQLException e) {
+			stmt = connection.prepareStatement(query);
+			setValues(stmt);
+			stmt.execute();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (con != null) {
+			if (stmt != null) {
 				try {
-					DatabaseConnector.closeConnection(con);
-				} catch (SQLException e1) {
+					stmt.close();
+				} catch (SQLException e) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					e.printStackTrace();
 				}
 			}
 		}
-		
 	}
 	
 	private String getSaveQuery() {
