@@ -50,7 +50,8 @@ public class TrendlineSlope implements AbstractFeature {
 	private ArrayList<Long> normalizeTime(ArrayList<Event> events) {
 		ArrayList<Long> result = new ArrayList<Long>();
 		for (Event event : events) {
-			result.add(event.getTime() - events.get(0).getTime());
+			Long day = (event.getTime() - events.get(0).getTime()) / 1000 / 3600 / 24;
+			result.add(day);
 		}
 		return result;
 	}
