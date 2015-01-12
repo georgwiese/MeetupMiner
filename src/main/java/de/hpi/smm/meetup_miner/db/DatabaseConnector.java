@@ -120,7 +120,7 @@ public class DatabaseConnector {
     
     public static Connection getNewConnection() throws ClassNotFoundException, SQLException {    	
         if (connectionParameters == null || connections.size() >= maxNumberOfConnections) {
-            return null;
+            throw new IllegalStateException("Can't create new connection, have " + connections.size());
         }
         Class.forName("com.sap.db.jdbc.Driver");
         String url;

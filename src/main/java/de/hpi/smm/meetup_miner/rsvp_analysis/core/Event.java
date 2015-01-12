@@ -2,17 +2,20 @@ package de.hpi.smm.meetup_miner.rsvp_analysis.core;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+
 import de.hpi.smm.meetup_miner.db.DatabaseConnector;
+import de.hpi.smm.meetup_miner.db.RsvpMemberIdLoader;
 
 /**
  * Represents an Event
  */
 public class Event {
+	
+	private static Connection connection;
 	
 	// Values that are given by Meetup
 	private String id;
@@ -76,41 +79,24 @@ public class Event {
 	 */
 	public Set<Integer> getYesMemberIds() {
 		if (yesMemberIds == null) {
-			yesMemberIds = downloadYesMemberIds();
+			try {
+				yesMemberIds = downloadYesMemberIds();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return yesMemberIds;
 	}
 	
-	private Set<Integer> downloadYesMemberIds() {
-		HashSet<Integer> result = new HashSet<Integer>();
-		Connection connection = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
+	private Set<Integer> downloadYesMemberIds() throws ClassNotFoundException, SQLException {
+		if (connection == null) {
 			connection = DatabaseConnector.getNewConnection();
-			if (connection != null) {
-				String query = "SELECT MEMBER_MEMBER_ID FROM RSVPS WHERE EVENT_ID = ?";
-				stmt = connection.prepareStatement(query);
-				stmt.setString(1, id);
-				if (stmt.execute()) {
-					rs = stmt.getResultSet();
-					while (rs.next()) {
-						result.add(rs.getInt(1));
-					}
-				}				
-			}
-		} catch (ClassNotFoundException | SQLException e) {
-			result = null;
-			e.printStackTrace();
-		} finally {
-			try {
-				DatabaseConnector.closeConnection(connection);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
 		}
-		return result;
+		
+		RsvpMemberIdLoader loader = new RsvpMemberIdLoader(connection);
+		return ImmutableSet.copyOf(loader.load(id));
 	}
 	
 	public void saveToDatabase() {
@@ -124,14 +110,16 @@ public class Event {
 				stmt.execute();
 			}
 		} catch (ClassNotFoundException | SQLException e) {
-			if (con != null)
+			e.printStackTrace();
+		} finally {
+			if (con != null) {
 				try {
 					DatabaseConnector.closeConnection(con);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			e.printStackTrace();
+			}
 		}
 		
 	}
