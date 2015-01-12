@@ -1,11 +1,11 @@
 package de.hpi.smm.meetup_miner;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import de.hpi.smm.meetup_miner.db.DatabaseConnector;
+import de.hpi.smm.meetup_miner.db.EventLoader;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
-import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventLoader;
 
 /**
  * Hello world!
@@ -17,7 +17,7 @@ public class App
     {
     	DatabaseConnector.setup(4);
     	EventLoader loader = new EventLoader(DatabaseConnector.getNewConnection());
-    	ArrayList<Event> events = loader.loadEventsForGroup("16037582");
+    	List<Event> events = loader.load("16037582");
     	for (Event event : events) {
 			System.out.println(event.getID() + " - " + event.getTitle() + " - " + event.getTime());
 			System.out.println(event.getYesMemberIds());

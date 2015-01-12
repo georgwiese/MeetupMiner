@@ -20,13 +20,14 @@ public class EventLoader extends AbstractLoader<Event>{
 		int yesRSVPs = resultSet.getInt("YES_RSVP_COUNT");
 		long created = resultSet.getLong("CREATED");
 		long time = resultSet.getLong("TIME");
-		Event event = new Event(id, title, yesRSVPs, created, time);
+		String status = resultSet.getString("STATUS");
+		Event event = new Event(id, title, yesRSVPs, created, time, status);
 		return event;
 	}
 
 	@Override
 	protected PreparedStatement getStatement(String selectionAttributeValue) {
-		String query = "SELECT ID, NAME, YES_RSVP_COUNT, CREATED, TIME FROM EVENTS WHERE group_id = ?";
+		String query = "SELECT ID, NAME, YES_RSVP_COUNT, CREATED, TIME, STATUS FROM EVENTS WHERE group_id = ?";
 		PreparedStatement statement = null;
 		try {
 			statement = connection.prepareStatement(query);
