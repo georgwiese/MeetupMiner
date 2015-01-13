@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TfIdfAdapter {
 	
-	public static final double THRESHOLD = 0.25;
+	public static final double THRESHOLD = 0.2;
 	public static final String QUERY = "SELECT * FROM MINING_GETTFIDF('MEETUP:EVENTS','DESCRIPTION', ?) WHERE tfidf >= ?";
 	
 	private Connection connection;

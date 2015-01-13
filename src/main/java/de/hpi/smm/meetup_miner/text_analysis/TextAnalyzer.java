@@ -44,6 +44,7 @@ public class TextAnalyzer {
 					System.out.println(String.format("ID %s: row number: %d (%d of %d)", event.getID(), analyzer.id2rownumber.get(event.getID()), current++, analyzer.id2rownumber.size()));
 					double compactness = analyzer.calculateCompactness(event.getID(), analyzer.id2rownumber.get(event.getID()));
 					System.out.println(compactness);
+					analyzer.insertCompactness(event.getID(), compactness);
 				}
 			}			
 		} catch (SQLException | ClassNotFoundException e) {}
@@ -54,6 +55,13 @@ public class TextAnalyzer {
 		}
 	}
 	
+	private void insertCompactness(String id, double compactness) throws SQLException {
+		PreparedStatement statement = connection.prepareStatement("UPDATE meetup.event_predictions SET description_compactness = ? WHERE id = ?");
+		statement.setDouble(1, compactness);
+		statement.setString(2, id);
+		statement.executeUpdate();
+	}
+
 	private void setupRowNumbers() {
 		System.out.println("Fetching row numbers...");
 		try {
