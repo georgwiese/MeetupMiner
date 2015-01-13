@@ -3,6 +3,8 @@ package de.hpi.smm.meetup_miner.text_analysis;
 public class Counter {
 
 	public static int countWords(String string){
+		if (string == null)
+			return 0;
 		String[] countingWords = string.split(" ");
 		return countingWords.length;
 	}
