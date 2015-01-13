@@ -46,11 +46,12 @@ public class EventWeighter {
 		if (stringSimilarityCache.size() > MAX_CACHE_SIZE) {
 			stringSimilarityCache.clear();
 		}
-		if (!stringSimilarityCache.containsKey(cacheKey)) {
-			double similarity = stringMetric.getSimilarity(title1, title2);
+		Double similarity = stringSimilarityCache.get(cacheKey);
+		if (similarity == null) {
+			similarity = (double) stringMetric.getSimilarity(title1, title2);
 			stringSimilarityCache.put(cacheKey, similarity);
 		}
-		return Math.max(MIN_TITLE_SIMILARITY, stringSimilarityCache.get(cacheKey));
+		return Math.max(MIN_TITLE_SIMILARITY, similarity);
 	}
 	
 	private double getTimeSimilarity(Event event) {
