@@ -45,9 +45,13 @@ public class TextAnalyzer {
 					double compactness = analyzer.calculateCompactness(event.getID(), analyzer.id2rownumber.get(event.getID()));
 					System.out.println(compactness);
 				}
-			}
-			
+			}			
 		} catch (SQLException | ClassNotFoundException e) {}
+		finally {
+			try {
+				DatabaseConnector.closeConnection(connection);
+			} catch (SQLException e) {}
+		}
 	}
 	
 	private void setupRowNumbers() {
