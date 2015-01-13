@@ -22,7 +22,7 @@ public class RsvpAnalysisMain {
     	GroupIdLoader groupIdLoader = new GroupIdLoader(connection);    	    
      	
     	List<Integer> groupIDs = groupIdLoader.load(CITY);
-    	int numberOfThreads = 8;
+    	int numberOfThreads = Runtime.getRuntime().availableProcessors();
     	CountDownLatch latch = new CountDownLatch(groupIDs.size());
     	
     	connection = DatabaseConnector.getNewConnection();
