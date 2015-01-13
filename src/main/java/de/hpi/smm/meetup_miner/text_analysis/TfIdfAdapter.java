@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TfIdfAdapter {
 	
-	public static final double THRESHOLD = 0.5;
-	public static final String QUERY = "SELECT ta_token, ta_tfidf FROM meetup.test WHERE id = ? and ta_tfidf >= ? ORDER BY ta_tfidf";
+	public static final double THRESHOLD = 0.25;
+	public static final String QUERY = "SELECT * FROM MINING_GETTFIDF('MEETUP:EVENTS','DESCRIPTION', ?) WHERE tfidf >= ?";
 	
 	private Connection connection;
 
@@ -20,26 +20,28 @@ public class TfIdfAdapter {
 		this.connection = connection;
 	}
 
-	public HashMap<String, List<String>> getKeywords(Iterable<String> ids) {
-		HashMap<String, List<String>> result = new HashMap<>();
-		for (String id : ids) {
+	public HashMap<Integer, List<String>> getKeywords(Iterable<Integer> ids) {
+		HashMap<Integer, List<String>> result = new HashMap<>();
+		for (int id : ids) {
 			result.put(id, getKeywordsFor(id));
 		}
 		return result;
 	}
 	
-	public ArrayList<String> getKeywordsFor(String id) {
+	public ArrayList<String> getKeywordsFor(int rownumber) {
 		ArrayList<String> results = new ArrayList<>();
 		
 		try {
 			PreparedStatement statement = connection.prepareStatement(QUERY);
-			statement.setString(1, id);
+			statement.setInt(1, rownumber);
 			statement.setDouble(2, THRESHOLD);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				results.add(resultSet.getString(1));
 			}
-		} catch (SQLException e) {}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return results;
 	}
 	

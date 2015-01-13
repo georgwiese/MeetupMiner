@@ -1,40 +1,41 @@
 package de.hpi.smm.meetup_miner.text_analysis;
 
 import java.sql.Connection;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 public class Compactness {
 	
-	private String id, description;
+	private int rownumber;
+	private String description;
 	private Connection connection;
 	
-	public Compactness(String id, String description, Connection connection) {
-		this.id = id;
+	public Compactness(int rownumber, String description, Connection connection) {
+		this.rownumber = rownumber;
 		this.description = description;
 		this.connection = connection;
 	}
 	
-	public double getCompactnessByWords(){
-		
-		NumberFormat numberFormat = new DecimalFormat("###.##");
-		
+	public double getCompactnessByWords(){		
 		int numOfWords = Counter.countWords(description);
-		int numOfKeyWords = new TfIdfAdapter(connection).getKeywordsFor(id).size();
-		double compactness = (double) numOfKeyWords * 100 / numOfWords;
+		int numOfKeyWords = new TfIdfAdapter(connection).getKeywordsFor(rownumber).size();
 		
-		return Double.parseDouble(numberFormat.format(compactness));
+		double compactness = 0;
+		if (numOfWords != 0) {
+			compactness = (double) numOfKeyWords * 100 / numOfWords;
+		}
+		
+		return compactness;
 	}
 	
-	public double getCompactnessByChars(){
-		
-		NumberFormat numberFormat = new DecimalFormat("###.##");
-		
+	public double getCompactnessByChars(){		
 		int numOfChars = Counter.countChars(description);
-		int numOfKeyChars = Counter.countChars(new TfIdfAdapter(connection).getKeywordsFor(id));
-		double compactness = (double) numOfKeyChars * 100 / numOfChars;
+		int numOfKeyChars = Counter.countChars(new TfIdfAdapter(connection).getKeywordsFor(rownumber));
 		
-		return Double.parseDouble(numberFormat.format(compactness));
+		double compactness = 0;
+		if (numOfChars != 0) {
+			compactness = (double) numOfKeyChars * 100 / numOfChars;
+		}
+		
+		return compactness;
 	}
 	
 }
