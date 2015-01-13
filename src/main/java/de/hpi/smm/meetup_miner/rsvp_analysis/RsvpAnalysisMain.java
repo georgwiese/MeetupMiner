@@ -98,7 +98,7 @@ public class RsvpAnalysisMain {
 		}
 	}
 	
-	private static void splitEvents(
+	public static void splitEvents(
 			List<Event> allEvents, List<Event> past, List<Event> upcoming) {
 		for (Event event : allEvents) {
 			if (event.getStatus().equals("past")) {

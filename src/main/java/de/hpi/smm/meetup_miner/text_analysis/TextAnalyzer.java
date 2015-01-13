@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import de.hpi.smm.meetup_miner.db.DatabaseConnector;
 import de.hpi.smm.meetup_miner.db.EventLoader;
 import de.hpi.smm.meetup_miner.db.GroupIdLoader;
+import de.hpi.smm.meetup_miner.rsvp_analysis.RsvpAnalysisMain;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
 
 public class TextAnalyzer {
@@ -32,11 +34,14 @@ public class TextAnalyzer {
 			TextAnalyzer analyzer = new TextAnalyzer(connection);
 			
 			analyzer.setupRowNumbers();
+			int current = 1;
 			
 			for (Integer groupId : groupLoader.load(CITY)) {
-				List<Event> allEvents = eventLoader.load(Integer.toString(groupId));
+				List<Event> allEventz = eventLoader.load(Integer.toString(groupId));
+				List<Event> allEvents = new ArrayList<>();
+				RsvpAnalysisMain.splitEvents(allEventz, new ArrayList<Event>(), allEvents);
 				for (Event event : allEvents) {
-					System.out.println(String.format("ID %s: row number: %d", event.getID(), analyzer.id2rownumber.get(event.getID())));
+					System.out.println(String.format("ID %s: row number: %d (%d of %d)", event.getID(), analyzer.id2rownumber.get(event.getID()), current++, analyzer.id2rownumber.size()));
 					double compactness = analyzer.calculateCompactness(event.getID(), analyzer.id2rownumber.get(event.getID()));
 					System.out.println(compactness);
 				}
@@ -48,10 +53,12 @@ public class TextAnalyzer {
 	private void setupRowNumbers() {
 		System.out.println("Fetching row numbers...");
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT id, row_number() over () FROM meetup.events");
+			PreparedStatement statement = connection.prepareStatement("SELECT id, row_number() over (), status FROM meetup.events");
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				id2rownumber.put(resultSet.getString(1), resultSet.getInt(2));
+				if ("upcoming".equals(resultSet.getString(3))) {
+					id2rownumber.put(resultSet.getString(1), resultSet.getInt(2));
+				}
 			}
 		} catch (SQLException e) {}
 		System.out.println("Done.");
