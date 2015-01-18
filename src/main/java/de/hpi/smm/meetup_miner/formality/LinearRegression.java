@@ -14,17 +14,11 @@ import scala.Tuple2;
 
 public class LinearRegression {
 	
-	JavaSparkContext sc;
-	JavaRDD<LabeledPoint> parsedData;
-	LinearRegressionModel model;
+	static JavaSparkContext sc = null;
+	static JavaRDD<LabeledPoint> parsedData = null;
+	static LinearRegressionModel model = null;
 	
-	public LinearRegression(){
-		this.sc = null;
-		this.parsedData = null;
-		this.model = null;
-	}
-	
-	public void train(String path){ // "data/Formality_Data.data"
+	public static void train(String path){ // "data/Formality_Data.data"
 		
 		SparkConf conf = new SparkConf().setAppName("Linear Regression for Formality").setMaster("local");
 		sc = new JavaSparkContext(conf);
@@ -48,19 +42,31 @@ public class LinearRegression {
 	    buildModel();
 	}
 
-	private void buildModel(){
+	private static void buildModel(){
 	    int numIterations = 100;
 	    model = LinearRegressionWithSGD.train(JavaRDD.toRDD(parsedData), numIterations);
 	}
 	
-	public void test(){
+	public static double predict(LabeledPoint labeledPoint){
+		
+		if(model == null){
+			System.out.println("train and build a model first. ");
+			return -1;
+		}
+		
+		double prediction = model.predict(labeledPoint.features());
+		return prediction;
+	}
+	
+	public static void test(){
+		
+		if(model == null){
+			System.out.println("train and build a model first. ");
+			return;
+		}
+		
 	    JavaRDD<Tuple2<Double, Double>> valuesAndPreds = parsedData.map(
 	  	      new Function<LabeledPoint, Tuple2<Double, Double>>() {
-
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 2444496605724582428L;
 
 				public Tuple2<Double, Double> call(LabeledPoint point) {
 	  	          double prediction = model.predict(point.features());
@@ -71,11 +77,6 @@ public class LinearRegression {
 	  	    
 	    double MSE = new JavaDoubleRDD(valuesAndPreds.map(
 	  	    	      new Function<Tuple2<Double, Double>, Object>() {
-	  	    	    	  
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1575720147092581378L;
 
 						public Object call(Tuple2<Double, Double> pair) {
 	  	    	          return Math.pow(pair._1() - pair._2(), 2.0);
@@ -86,13 +87,12 @@ public class LinearRegression {
 	    sc.close();
 	}
 
-	public static void run() {
+	public static void run(String path) {
 		
 		SparkConf conf = new SparkConf().setAppName("Linear Regression for Formality").setMaster("local");
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		
 	    // Load and parse the data
-	    String path = "data/lpsa.data";
 	    JavaRDD<String> data = sc.textFile(path);
 	    JavaRDD<LabeledPoint> parsedData = data.map(
 	      new Function<String, LabeledPoint>() {
@@ -114,12 +114,20 @@ public class LinearRegression {
 	    final LinearRegressionModel model = 
 	      LinearRegressionWithSGD.train(JavaRDD.toRDD(parsedData), numIterations);
 	    
+	 // analyze
+	    //ArrayList<ArrayList<Double>> analyze = new ArrayList<ArrayList<Double>>();
+//	    ArrayList<Double> test = new ArrayList<Double>();
+//	    double[] v = new double[4];
+//	    LabeledPoint labelPoint = new LabeledPoint(1.0, Vectors.dense(v));
+//	    double prediction = model.predict(labelPoint.features());
+	    
 	 // Evaluate model on training examples and compute training error
 	    JavaRDD<Tuple2<Double, Double>> valuesAndPreds = parsedData.map(
 	      new Function<LabeledPoint, Tuple2<Double, Double>>() {
 
 			public Tuple2<Double, Double> call(LabeledPoint point) {
 	          double prediction = model.predict(point.features());
+	          //System.out.println(prediction + ", " + point.label());
 	          return new Tuple2<Double, Double>(prediction, point.label());
 	        }
 	      }
