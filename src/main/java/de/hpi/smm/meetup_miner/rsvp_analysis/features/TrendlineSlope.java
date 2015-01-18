@@ -41,7 +41,7 @@ public class TrendlineSlope implements AbstractFeature {
 	}
 	
 	private double normalizeTime(Event event, Event baseEvent) {
-		return (double) (baseEvent.getTime() - event.getTime()) / 1000 / 3600 / 24;
+		return (double) (event.getTime() - baseEvent.getTime()) / 1000 / 3600 / 24;
 	}
 
 }
