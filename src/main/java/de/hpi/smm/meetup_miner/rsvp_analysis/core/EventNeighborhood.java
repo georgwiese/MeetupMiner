@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
@@ -26,6 +28,14 @@ public class EventNeighborhood {
 				eventInfos.add(new EventInfo(event, eventWeighter.computeWeight(event)));
 			}
 		}
+	}
+	
+	public List<Pair<Event, Double>> getEventWeightPairs() {
+		List<Pair<Event, Double>> list = new ArrayList<>();
+		for (EventInfo eventInfo : eventInfos) {
+			list.add(Pair.of(eventInfo.event, eventInfo.weight));
+		}
+		return list;
 	}
 	
 	public List<Double> getWeights() {

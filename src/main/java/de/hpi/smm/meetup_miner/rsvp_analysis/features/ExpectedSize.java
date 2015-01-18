@@ -1,5 +1,7 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.features;
 
+import java.util.Collection;
+
 import com.google.common.base.Function;
 
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
@@ -15,7 +17,7 @@ public class ExpectedSize implements AbstractFeature {
 	};
 
 	@Override
-	public double forEvent(Event event, Iterable<Event> pastEvents) {
+	public double forEvent(Event event, Collection<Event> pastEvents) {
 		EventNeighborhood neighborhood = new EventNeighborhood(event, pastEvents);
 		return neighborhood.weightedAverage(eventSize);
 	}
