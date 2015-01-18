@@ -11,8 +11,8 @@ import de.hpi.smm.meetup_miner.db.GroupIdLoader;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.ExpectedMemberLoyality;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.ExpectedSize;
+import de.hpi.smm.meetup_miner.rsvp_analysis.features.TrendlineSlopeWeighted;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.TrendlineSlope;
-import de.hpi.smm.meetup_miner.rsvp_analysis.features.TrendlineSlopeOld;
 
 public class RsvpAnalysisMain {
 	
@@ -51,12 +51,12 @@ public class RsvpAnalysisMain {
 		    		for (int j = 0; j < upcomingEvents.size(); j++) {
 		    			Event event = upcomingEvents.get(j);
 		    			System.out.println("\t" + this.getName() + "\tEvent " + j + " of " + upcomingEvents.size());
-		    			System.out.println("\t Slope: " + (new TrendlineSlopeOld()).forEvent(event, pastEvents) + " --> " + (new TrendlineSlope()).forEvent(event, pastEvents));
-		    			/*event.expectedSize = (float) (new ExpectedSize()).forEvent(event, pastEvents);
+		    			event.expectedSize = (float) (new ExpectedSize()).forEvent(event, pastEvents);
 		    			event.expectedMemberLoyality = (float) (new ExpectedMemberLoyality()).forEvent(event, pastEvents);
 		    			event.expectedTrend = (float) (new TrendlineSlope()).forEvent(event, pastEvents);
+		    			event.expectedTrendWeighted = (float) (new TrendlineSlopeWeighted()).forEvent(event, pastEvents);
 		    			
-		    			event.saveToDatabase(connection);*/
+		    			event.saveToDatabase(connection);
 		    		}
 				}
 			} catch (ClassNotFoundException | SQLException e) {				
