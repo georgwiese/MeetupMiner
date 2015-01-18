@@ -22,7 +22,7 @@ public class EventWeighterTests {
 	@Before
 	public void setUp() {
 		baseEvent = EventMockFactory.getDefault();
-		eventWeighter = new EventWeighter(baseEvent);
+		eventWeighter = new EventWeighter(baseEvent, EventWeighter.HALF_TIME_MONTH);
 	}
 
 	@Test

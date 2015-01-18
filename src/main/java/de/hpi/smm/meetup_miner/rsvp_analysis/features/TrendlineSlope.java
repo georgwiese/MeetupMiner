@@ -1,6 +1,6 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.features;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -19,7 +19,7 @@ public class TrendlineSlope implements AbstractFeature {
 
 	// based on http://classroom.synonym.com/calculate-trendline-2709.html
 	@Override
-	public double forEvent(Event event, Iterable<Event> pastEvents) {
+	public double forEvent(Event event, Collection<Event> pastEvents) {
 		ArrayList<Event> events = createOrderedList(pastEvents);
 		ArrayList<Long> times = normalizeTime(events);
 		float a = 0, b = 0, b1 = 0, b2 = 0, c = 0, d = 0;
