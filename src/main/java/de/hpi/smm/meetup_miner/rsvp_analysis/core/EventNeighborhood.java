@@ -19,8 +19,12 @@ public class EventNeighborhood {
 	private Collection<EventInfo> eventInfos;
 	
 	public EventNeighborhood(Event baseEvent, Iterable<Event> events) {
+		this(baseEvent, events, EventWeighter.HALF_TIME_MONTH);
+	}
+	
+	public EventNeighborhood(Event baseEvent, Iterable<Event> events, long halfTime) {
 		this.baseEvent = baseEvent;
-		eventWeighter = new EventWeighter(baseEvent);
+		eventWeighter = new EventWeighter(baseEvent, halfTime);
 		
 		eventInfos = new ArrayList<EventInfo>();
 		for (Event event : events) {

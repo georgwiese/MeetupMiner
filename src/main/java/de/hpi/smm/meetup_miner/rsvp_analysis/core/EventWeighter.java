@@ -12,10 +12,10 @@ import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
  *
  */
 public class EventWeighter {
+
+	public static final long HALF_TIME_MONTH = 30L * 24L * 60L * 60L * 1000L;
+	public static final long HALF_TIME_6MONTHS = 6 * HALF_TIME_MONTH;
 	
-	/** Half time of time similarity in ms */
-	private static final long TIME_SIMILARITY_HALF_TIME =
-			30L * 24L * 60L * 60L * 1000L; // 1 month
 	private static final double SAME_TIME_CREATED_BOOST = 0.1;
 	private static final double MIN_TITLE_SIMILARITY = 0.2;
 	
@@ -24,10 +24,12 @@ public class EventWeighter {
 			stringSimilarityCache = new ConcurrentHashMap<>();
 	
 	private Event baseEvent;
+	private long halfTime;
 	private AbstractStringMetric stringMetric;
 
-	public EventWeighter(Event baseEvent) {
+	public EventWeighter(Event baseEvent, long halfTime) {
 		this.baseEvent = baseEvent;
+		this.halfTime = halfTime;
 		stringMetric = new Levenshtein();
 	}
 
@@ -56,7 +58,7 @@ public class EventWeighter {
 	
 	private double getTimeSimilarity(Event event) {
 		long timeDiff = Math.abs(event.getTime() - baseEvent.getTime());
-		return Math.pow(2.0, - 1.0 / TIME_SIMILARITY_HALF_TIME * timeDiff);
+		return Math.pow(2.0, - 1.0 / halfTime * timeDiff);
 	}
 	
 	private double getSameTimeCreatedBoost(Event event) {

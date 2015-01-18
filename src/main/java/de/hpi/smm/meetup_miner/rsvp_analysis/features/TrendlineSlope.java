@@ -7,13 +7,17 @@ import org.apache.commons.math3.stat.regression.GLSMultipleLinearRegression;
 
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventNeighborhood;
+import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventWeighter;
 
 public class TrendlineSlope implements AbstractFeature {
 
-	// based on http://classroom.synonym.com/calculate-trendline-2709.html
 	@Override
 	public double forEvent(Event event, Collection<Event> pastEvents) {
-		EventNeighborhood neighborhood = new EventNeighborhood(event, pastEvents);
+		if (pastEvents.size() < 2) {
+			return 0.0;
+		}
+		
+		EventNeighborhood neighborhood = new EventNeighborhood(event, pastEvents, EventWeighter.HALF_TIME_6MONTHS);
 		double[] y = new double[pastEvents.size()];
 		double[][] x = new double[pastEvents.size()][1];
 		double[][] omega = new double[pastEvents.size()][pastEvents.size()];
@@ -24,8 +28,10 @@ public class TrendlineSlope implements AbstractFeature {
 			double currentWeight = eventWithWeight.getRight();
 			
 			y[index] = currentEvent.getYesRsvpCount();
-			x[index][0] = normalizeTime(currentEvent);
+			x[index][0] = normalizeTime(currentEvent, event);
 			omega[index][index] = 1.0 / currentWeight;
+			
+			index++;
 		}
 		
 		GLSMultipleLinearRegression regression = new GLSMultipleLinearRegression();
@@ -34,8 +40,8 @@ public class TrendlineSlope implements AbstractFeature {
 		return b[1];
 	}
 	
-	private long normalizeTime(Event event) {
-		return (event.getTime() - event.getTime()) / 1000 / 3600 / 24;
+	private double normalizeTime(Event event, Event baseEvent) {
+		return (double) (baseEvent.getTime() - event.getTime()) / 1000 / 3600 / 24;
 	}
 
 }
