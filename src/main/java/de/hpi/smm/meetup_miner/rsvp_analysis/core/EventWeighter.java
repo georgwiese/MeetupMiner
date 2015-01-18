@@ -13,8 +13,10 @@ import uk.ac.shef.wit.simmetrics.similaritymetrics.Levenshtein;
  */
 public class EventWeighter {
 
-	public static final long HALF_TIME_MONTH = 30L * 24L * 60L * 60L * 1000L;
-	public static final long HALF_TIME_6MONTHS = 6 * HALF_TIME_MONTH;
+	public static final long HALF_TIME_DAY = 24L * 60L * 60L * 1000L;
+	public static final long HALF_TIME_MONTH = 30L * HALF_TIME_DAY;
+	public static final long HALF_TIME_6MONTHS = 6L * HALF_TIME_MONTH;
+	public static final long HALF_TIME_YEAR = 365L * HALF_TIME_DAY;
 	
 	private static final double SAME_TIME_CREATED_BOOST = 0.1;
 	private static final double MIN_TITLE_SIMILARITY = 0.2;

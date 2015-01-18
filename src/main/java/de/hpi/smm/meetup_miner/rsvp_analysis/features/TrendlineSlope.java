@@ -1,47 +1,63 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.features;
-
+import java.util.ArrayList;
 import java.util.Collection;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.stat.regression.GLSMultipleLinearRegression;
+import java.util.Collections;
+import java.util.Comparator;
 
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
-import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventNeighborhood;
-import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventWeighter;
 
 public class TrendlineSlope implements AbstractFeature {
+	
+	private class TimeComparator implements Comparator<Event> {
 
+		@Override
+		public int compare(Event o1, Event o2) {
+			return Float.compare(o1.getTime(), o2.getTime());			
+		}
+		
+	}
+
+	// based on http://classroom.synonym.com/calculate-trendline-2709.html
 	@Override
 	public double forEvent(Event event, Collection<Event> pastEvents) {
-		if (pastEvents.size() < 2) {
-			return 0.0;
+		ArrayList<Event> events = createOrderedList(pastEvents);
+		ArrayList<Long> times = normalizeTime(events);
+		float a = 0, b = 0, b1 = 0, b2 = 0, c = 0, d = 0;
+		for (int i = 0; i < events.size(); i++) {
+			Event currentEvent = events.get(i);
+			a += times.get(i) * currentEvent.getYesRsvpCount();
+			b1 += times.get(i);
+			b2 += currentEvent.getYesRsvpCount();
+			c += times.get(i) * times.get(i);
+			d += times.get(i);
 		}
-		
-		EventNeighborhood neighborhood = new EventNeighborhood(event, pastEvents, EventWeighter.HALF_TIME_6MONTHS);
-		double[] y = new double[pastEvents.size()];
-		double[][] x = new double[pastEvents.size()][1];
-		double[][] omega = new double[pastEvents.size()][pastEvents.size()];
-		
-		int index = 0;
-		for (Pair<Event, Double> eventWithWeight : neighborhood.getEventWeightPairs()) {
-			Event currentEvent = eventWithWeight.getLeft();
-			double currentWeight = eventWithWeight.getRight();
-			
-			y[index] = currentEvent.getYesRsvpCount();
-			x[index][0] = normalizeTime(currentEvent, event);
-			omega[index][index] = 1.0 / currentWeight;
-			
-			index++;
+		a *= events.size();
+		b = b1 * b2;
+		c *= events.size();
+		d *= d;
+		float result = (a - b) / (c - d);
+		if (Float.isInfinite(result)) {
+			result = Float.MAX_VALUE;
 		}
-		
-		GLSMultipleLinearRegression regression = new GLSMultipleLinearRegression();
-		regression.newSampleData(y, x, omega); 
-		double[] b = regression.estimateRegressionParameters();
-		return b[1];
+		return result;
 	}
 	
-	private double normalizeTime(Event event, Event baseEvent) {
-		return (double) (event.getTime() - baseEvent.getTime()) / 1000 / 3600 / 24;
+	private ArrayList<Event> createOrderedList(Iterable<Event> events) {
+		ArrayList<Event> result = new ArrayList<Event>();
+		for (Event event : events) {
+			result.add(event);
+		}
+		Collections.sort(result, new TimeComparator());
+		return result;
+	}
+	
+	private ArrayList<Long> normalizeTime(ArrayList<Event> events) {
+		ArrayList<Long> result = new ArrayList<Long>();
+		for (Event event : events) {
+			Long day = (event.getTime() - events.get(0).getTime()) / 1000 / 3600 / 24;
+			result.add(day);
+		}
+		return result;
 	}
 
 }

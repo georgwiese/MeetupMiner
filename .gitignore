@@ -20,3 +20,5 @@ lib/com.sap.db.jdbc.hana_1.0.0.SNAPSHOT.jar
 hs_err_pid*
 
 /target
+/target
+/target
