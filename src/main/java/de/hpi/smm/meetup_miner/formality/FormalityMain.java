@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.atteo.evo.inflector.English;
-
 import de.hpi.smm.meetup_miner.formality.features.AbbreviationWords;
 import de.hpi.smm.meetup_miner.formality.features.ContentWords;
 import de.hpi.smm.meetup_miner.formality.features.ContractionWords;

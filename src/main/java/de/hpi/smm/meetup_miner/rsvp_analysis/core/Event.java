@@ -30,6 +30,7 @@ public class Event {
 	public float expectedMemberLoyality = -Float.MAX_VALUE;
 	public float expectedSize = -Float.MAX_VALUE;
 	public float expectedTrend = -Float.MAX_VALUE;
+	public float expectedTrendWeighted = -Float.MAX_VALUE;
 	
 	public Event(
 			String id, String title, int yesRSVPcount, long createdTime, long time, String status) {
@@ -128,6 +129,8 @@ public class Event {
 			queryBuilder.append("expected_Size,");
 		if (expectedTrend > -Float.MAX_VALUE)
 			queryBuilder.append("expected_Trend,");
+		if (expectedTrendWeighted > -Float.MAX_VALUE)
+			queryBuilder.append("expected_Trend_weighted,");
 		queryBuilder.deleteCharAt(queryBuilder.length() - 1);
 		queryBuilder.append(") VALUES (?,");
 		if (expectedMemberLoyality > -Float.MAX_VALUE)
@@ -135,6 +138,8 @@ public class Event {
 		if (expectedSize > -Float.MAX_VALUE)
 			queryBuilder.append("?,");
 		if (expectedTrend > -Float.MAX_VALUE)
+			queryBuilder.append("?,");
+		if (expectedTrendWeighted > -Float.MAX_VALUE)
 			queryBuilder.append("?,");
 		queryBuilder.deleteCharAt(queryBuilder.length() - 1);
 		queryBuilder.append(") WHERE id = ?");
@@ -155,6 +160,10 @@ public class Event {
 			}
 			if (expectedTrend > -Float.MAX_VALUE) {
 				stmt.setFloat(i, expectedTrend);
+				i += 1;
+			}
+			if (expectedTrendWeighted > -Float.MAX_VALUE) {
+				stmt.setFloat(i, expectedTrendWeighted);
 				i += 1;
 			}
 			stmt.setString(i, id);

@@ -1,6 +1,7 @@
 package de.hpi.smm.meetup_miner.rsvp_analysis.features;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public class MemberLoyality implements AbstractFeature {
 			};
 
 	@Override
-	public double forEvent(Event event, Iterable<Event> pastEvents) {
+	public double forEvent(Event event, Collection<Event> pastEvents) {
 		baseEventMembers = event.getYesMemberIds();
 		if (baseEventMembers.size() == 0) {
 			return 0.5;
