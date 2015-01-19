@@ -40,6 +40,11 @@ public class LinearRegression {
 	    parsedData = data.map(
 	      new Function<String, LabeledPoint>() {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 4899047225011705574L;
+
 			public LabeledPoint call(String line) {
 	          String[] parts = line.split(",");
 	          String[] features = parts[1].split(" ");

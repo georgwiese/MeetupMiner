@@ -1,19 +1,6 @@
 package de.hpi.smm.meetup_miner.formality;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.hpi.smm.meetup_miner.formality.builder.DataBuilder;
-import de.hpi.smm.meetup_miner.formality.features.AbbreviationWords;
-import de.hpi.smm.meetup_miner.formality.features.FormalContentWords;
-import de.hpi.smm.meetup_miner.formality.features.ContractionWords;
-import de.hpi.smm.meetup_miner.formality.features.Feature;
-import de.hpi.smm.meetup_miner.formality.features.FormalWords;
-import de.hpi.smm.meetup_miner.formality.features.InformalContentWords;
-import de.hpi.smm.meetup_miner.formality.features.InformalWords;
-import de.hpi.smm.meetup_miner.formality.features.NonAbbreviationWords;
-import de.hpi.smm.meetup_miner.formality.features.NonContractionWords;
 
 public class FormalityMain {
 
