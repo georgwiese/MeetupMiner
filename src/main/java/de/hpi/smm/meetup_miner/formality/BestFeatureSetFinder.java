@@ -19,6 +19,7 @@ public class BestFeatureSetFinder {
 
 	public static void main(String[] args) throws IOException {
 
+		long startTime = System.currentTimeMillis();
 		File file = new File("data/PowerSet.txt");
 		
 		if (!file.exists()) file.createNewFile();
@@ -26,7 +27,7 @@ public class BestFeatureSetFinder {
 		FileWriter fw = new FileWriter(file.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(fw);
 		
-		MutableSet<Integer> powerSet = UnifiedSet.newSetWith(1);
+		MutableSet<Integer> powerSet = UnifiedSet.newSetWith(1, 2, 3, 4, 5, 6, 7, 8);
 		powerSet.powerSet();
 		
 		for (UnsortedSetIterable<Integer> set: powerSet.powerSet()){
@@ -79,6 +80,8 @@ public class BestFeatureSetFinder {
 		}//end for
 		
 		bw.close();
+		long estimatedTime = System.currentTimeMillis() - startTime;
+		System.out.println(estimatedTime/1000 + " seconds");
 	}
 	
 	
