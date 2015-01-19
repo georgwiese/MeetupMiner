@@ -1,4 +1,4 @@
-package de.hpi.smm.meetup_miner.formality;
+package de.hpi.smm.meetup_miner.formality.builder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.atteo.evo.inflector.English;
 
 public class FeatureBuilder {
 	
@@ -41,6 +42,9 @@ public class FeatureBuilder {
 				Cell cell = cellIterator.next();
 				String cellVal = cell.getStringCellValue().toLowerCase().trim();
 				if(!targetWords.contains(cellVal)) targetWords.add(cellVal);
+				
+				String cellValPlural = English.plural(cellVal);
+				if(!targetWords.contains(cellValPlural)) targetWords.add(cellValPlural);
 			}
 		}
 		

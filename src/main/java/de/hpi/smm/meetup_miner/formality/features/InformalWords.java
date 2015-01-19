@@ -2,7 +2,7 @@ package de.hpi.smm.meetup_miner.formality.features;
 
 import java.io.IOException;
 
-import de.hpi.smm.meetup_miner.formality.FeatureBuilder;
+import de.hpi.smm.meetup_miner.formality.builder.FeatureBuilder;
 
 public class InformalWords extends Feature{
 	

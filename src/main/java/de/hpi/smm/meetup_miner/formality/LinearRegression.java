@@ -1,5 +1,11 @@
 package de.hpi.smm.meetup_miner.formality;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaDoubleRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -18,7 +24,13 @@ public class LinearRegression {
 	static JavaRDD<LabeledPoint> parsedData = null;
 	static LinearRegressionModel model = null;
 	
-	public static void train(String path){ // "data/Formality_Data.data"
+	public static void reset(){
+		sc = null;
+		parsedData = null;
+		model = null;
+	}
+	
+	public static void train(String path, int iteration){ // "data/Formality_Data.data"
 		
 		SparkConf conf = new SparkConf().setAppName("Linear Regression for Formality").setMaster("local");
 		sc = new JavaSparkContext(conf);
@@ -27,6 +39,8 @@ public class LinearRegression {
 	    JavaRDD<String> data = sc.textFile(path);
 	    parsedData = data.map(
 	      new Function<String, LabeledPoint>() {
+
+			private static final long serialVersionUID = 4899047225011705574L;
 
 			public LabeledPoint call(String line) {
 	          String[] parts = line.split(",");
@@ -39,12 +53,44 @@ public class LinearRegression {
 	      }
 	    );
 	    parsedData.cache();
-	    buildModel();
+	    buildModel(iteration);
 	}
 
-	private static void buildModel(){
-	    int numIterations = 100;
-	    model = LinearRegressionWithSGD.train(JavaRDD.toRDD(parsedData), numIterations);
+	private static void buildModel(int iteration){
+	    int numIterations = iteration;
+	    model = LinearRegressionWithSGD.train(JavaRDD.toRDD(parsedData), numIterations);	    
+	}
+	
+	public static void writeResult() throws IOException{
+		
+		if(model == null){
+			System.out.println("train and build a model first. ");
+			return;
+		}
+		
+		File writeFile = new File("data/Result.txt");
+		
+		if (writeFile.exists()) {
+			if(writeFile.delete()) System.out.println(writeFile.getName() + " is deleted");
+			else System.out.println("Delete operation is failed.");
+		}
+		writeFile.createNewFile();
+
+		FileWriter fw = new FileWriter(writeFile.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		
+		String content = "";
+		Iterator<LabeledPoint> iterator = parsedData.toLocalIterator();
+		while(iterator.hasNext()) {
+			LabeledPoint curPoint = iterator.next();
+			double prediction = model.predict(curPoint.features());
+			double MSE = Math.pow(prediction - curPoint.label(), 2.0);
+			
+			content = curPoint.label() + " " + MSE + "\n";
+			bw.write(content);
+		}
+		
+		bw.close();
 	}
 	
 	public static double predict(LabeledPoint labeledPoint){
@@ -54,22 +100,24 @@ public class LinearRegression {
 			return -1;
 		}
 		
-		double prediction = model.predict(labeledPoint.features());
-		return prediction;
+		return  model.predict(labeledPoint.features());
 	}
 	
-	public static void test(){
+	public static double test(){
 		
 		if(model == null){
 			System.out.println("train and build a model first. ");
-			return;
+			return -1;
 		}
 		
 	    JavaRDD<Tuple2<Double, Double>> valuesAndPreds = parsedData.map(
 	  	      new Function<LabeledPoint, Tuple2<Double, Double>>() {
 
+				private static final long serialVersionUID = -2174768193533525100L;
+
 				public Tuple2<Double, Double> call(LabeledPoint point) {
 	  	          double prediction = model.predict(point.features());
+	  	          System.out.printf("%f\n", prediction);
 	  	          return new Tuple2<Double, Double>(prediction, point.label());
 	  	        }
 	  	      }
@@ -78,13 +126,19 @@ public class LinearRegression {
 	    double MSE = new JavaDoubleRDD(valuesAndPreds.map(
 	  	    	      new Function<Tuple2<Double, Double>, Object>() {
 
+						private static final long serialVersionUID = 1003612371207826393L;
+
 						public Object call(Tuple2<Double, Double> pair) {
-	  	    	          return Math.pow(pair._1() - pair._2(), 2.0);
+							
+							double mathPow = Math.pow(pair._1() - pair._2(), 2.0);
+							
+	  	    	          return mathPow;
 	  	    	        }
 	  	    	      }
 	  	    	    ).rdd()).mean();
 	    System.out.println("training Mean Squared Error = " + MSE);
 	    sc.close();
+	    return MSE;
 	}
 
 	public static void run(String path) {
@@ -96,6 +150,8 @@ public class LinearRegression {
 	    JavaRDD<String> data = sc.textFile(path);
 	    JavaRDD<LabeledPoint> parsedData = data.map(
 	      new Function<String, LabeledPoint>() {
+
+			private static final long serialVersionUID = 4283402431233585959L;
 
 			public LabeledPoint call(String line) {
 	          String[] parts = line.split(",");
@@ -125,6 +181,8 @@ public class LinearRegression {
 	    JavaRDD<Tuple2<Double, Double>> valuesAndPreds = parsedData.map(
 	      new Function<LabeledPoint, Tuple2<Double, Double>>() {
 
+			private static final long serialVersionUID = -3346048035752468229L;
+
 			public Tuple2<Double, Double> call(LabeledPoint point) {
 	          double prediction = model.predict(point.features());
 	          //System.out.println(prediction + ", " + point.label());
@@ -135,6 +193,8 @@ public class LinearRegression {
 	    
 	    double MSE = new JavaDoubleRDD(valuesAndPreds.map(
 	    	      new Function<Tuple2<Double, Double>, Object>() {
+
+					private static final long serialVersionUID = 4980643517111584188L;
 
 					public Object call(Tuple2<Double, Double> pair) {
 	    	          return Math.pow(pair._1() - pair._2(), 2.0);
