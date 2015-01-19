@@ -47,14 +47,16 @@ public class DataBase {
 	
 	public static void main (String[]  args) throws ClassNotFoundException, SQLException, IOException {
 
-		getFormalityPredictionMap(getEventIdMap());
+		updateDataBase(getFormalityPredictionMap());
+		
 	}
 	
-	private static HashMap<String, Double> getFormalityPredictionMap(HashMap<String, Double> map) throws ClassNotFoundException, SQLException, IOException{
+	private static HashMap<String, Double> getFormalityPredictionMap() throws ClassNotFoundException, SQLException, IOException{
 		
-		HashMap<String, Double> formalityMap = map;
+		HashMap<String, Double> formalityMap = getEventIdMap();
 		Connection con = DatabaseConnector.getNewConnection();
-		LinearRegression.train("data/Formality_Data.data", 2000);
+		List<Feature> featureList = getFeatureList();
+		LinearRegression.train("data/Formality_Data.data", 2000);  
 		
 		for(String key : formalityMap.keySet()){
 
@@ -62,13 +64,18 @@ public class DataBase {
 			PreparedStatement stmt = con.prepareStatement(query);
 			if (stmt.execute()) {
 				ResultSet rs = stmt.getResultSet();
-				while (rs.next()) {
+				while(rs.next()){
 					
 					String description = rs.getString("DESCRIPTION");
-					List<Feature> featureList = getFeatureList();
-					String featureData = DataBuilder.createFeatureDataFromDescription(description, featureList);
-					LabeledPoint labeledPoint = DataBuilder.createLabeledPoint(featureData);
-					Double prediction = LinearRegression.predict(labeledPoint);
+					Double prediction;
+					
+					if(description == null) prediction = -1d;
+					else{
+						String featureData = DataBuilder.createFeatureDataFromDescription(description, featureList);
+						LabeledPoint labeledPoint = DataBuilder.createLabeledPoint(featureData);
+						prediction = LinearRegression.predict(labeledPoint);
+					}
+
 					System.out.println(prediction);
 					if(prediction<0) prediction = 0d;
 					if(prediction>10) prediction = 10d;

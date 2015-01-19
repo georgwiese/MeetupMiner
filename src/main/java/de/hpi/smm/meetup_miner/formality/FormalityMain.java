@@ -20,6 +20,8 @@ public class FormalityMain {
 //		DataBuilder.writeDataFile(features);
 		LinearRegression.train("data/Formality_Data.data", 2000);
 		LinearRegression.test();
+		
+
 	}
 
 }

@@ -19,6 +19,8 @@ public abstract class Feature {
 	
 	public double getFeatureValue(String description, boolean onlyFreq){
 		
+		if(description == null) description = "";
+		
 		double totalCount = 0d;
 		ArrayList<String> singleWordList = new ArrayList<String>();
 		ArrayList<String> multipleWordList = new ArrayList<String>();
