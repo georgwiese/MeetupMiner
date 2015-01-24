@@ -14,7 +14,7 @@ public class DatabaseConnector {
     public static DbConnectionParameters connectionParameters = new DbConnectionParameters();
 
     public static class DbConnectionParameters {
-        public String host = Secrets.HANA_IP_INTERN;
+        public String host = Secrets.HANA_IP_VPN;
         public int port = Secrets.HANA_PORT;
         public String dbName = "";
         public String userName = Secrets.HANA_USER;
