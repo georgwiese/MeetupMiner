@@ -1,21 +1,19 @@
 package de.hpi.smm.meetup_miner.formality.features;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Feature {
 
-	protected ArrayList<String> targetWordList;
+	protected List<String> targetWordList;
 	
 	public Feature(){
 		this.targetWordList = new ArrayList<String>();
 	}
 
-	public ArrayList<String> getTargetWordList() {
+	public List<String> getTargetWordList() {
 		return targetWordList;
 	}
-
-	abstract protected void setTargetWordList() throws IOException;
 	
 	public double getFeatureValue(String description, boolean onlyFreq){
 		
