@@ -31,6 +31,7 @@ public class DataBuilderMain {
 		features.add(new NonContractionWords());
 		
 		System.out.println(DataBuilder.createFeatureDataFromDescription(description, features));
+		DataBuilder.writeDataFile(features);
 	}
 
 }

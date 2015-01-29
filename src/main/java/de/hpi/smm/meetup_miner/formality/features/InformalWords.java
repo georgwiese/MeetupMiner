@@ -1,18 +1,12 @@
 package de.hpi.smm.meetup_miner.formality.features;
 
-import java.io.IOException;
-
-import de.hpi.smm.meetup_miner.formality.builder.FeatureBuilder;
+import java.util.Arrays;
 
 public class InformalWords extends Feature{
 	
-	public InformalWords() throws IOException{
-		setTargetWordList();
+	private String[] targetWords = {"a bit","about","absentminded","absorb","abundant","add","advise","again and again","aim","allot","allow","and","anybody","anyplace","apathy","appeal","applause","application","approval","around","arty","ask","ask about","ask for","assert","assign","at first","at once","assume","attribute","authority","avoid","aware","awful","basic","be going to","beach","beg","beginner","belittle","bellyache","better","big","bigger","bitterness","blabbermouth","blame","blessedness","bloody","boozer","boundless","brag","brilliant","bring","bring up","broad-minded","broke","bug","build","bully","busy","but","buy","cancel","carry","catch","catch on","cease","chance","change","chat","cheap","check up","chew","childish","choose","chubby","chump","clean","clear","cleave","climb","clothing","comfort","command","conceit","concern","conduct","conference","confusion","conscious","consider","console","control","convert","copy","cowardly","coworker","crony","crowd","cry","cuddle","curse","cute","dad","daily","deal with","decay","decent","dedicate","delete","delicious","determine","difficult","digest","diligent","dim","disable","disapproval","disaster","discussion","disease","disgusting","do","dog","doubt","doubter","douse","dread","drive","drop","drunk","dry","dub","dumb","dunk","duplicate","earlier","eat","edgy","embarrassement","empty","encourage","end","endless","enough","erase","everlasting","every year","everybody","everyday","evil","excuse","explain","facts","fair","fall","famous","farming","farsightedness","fast","fat","feeling","fib","field","filmy","find","fix","flabbergasted","flashy","fleshy","flimsy","foretell","forgive","fragile","free","fridge","friendly","frisky","funny","gabby","gap","gardening","gather","generous","get","get out","get smaller","gist","give","give out","glasses","gleaming","go","go down with","go through","go up","goal","good","goodwill","goof","gourmet","great","greedy","grill","gripe","grown-up","guess","guy","happiness","hard","harshness","have to","heavy","hefty","help","helper","high","hint","hire","hoard","hobby","home","house","hug","huge","humanity","humorous","hurry","illness","imply","important","improve","in charge","in the end","inbred","incidental","include","indirectness","inhabit","interject","jam","jaundiced","job","jolt","keep","kid","kind of","kindness","lack","lady","lay back","laziness","learn","learner","learning","leave","leftover","lessen","let","letter","letup","lighten","like","lit up","live","lively","loaded","loneliness","lonesome","look up","loud","lucky","lukewarm","mad","mainly","make sure","many","maybe","mean","means","meant","mend","method","middle","modify","mom","moral","move","mushy","nab","need","neighboring","next","nice","nitpicking","nobody","nosy","numb","numbskull","obscure","offer ok","old","older","old-fashioned","on and off","oppose","optimistic","originate","outcome","outstanding","own","pale","parched","participate","pay","peak","phone","photo","piddling","pigeonhole","plan","plane","plucky","portion","power","praise","preacher","premonition","present","pretty much","prize","project","promise","prompt","promptness","pushy","put up","quick","quit","quotation","raunchy","really","reasoning","rebirth","redundant","relentless","remain","remember","replace","request","resemble","resolution","rest","rile","ripen","risk","rob","rot","sanction","say no","scanty","scold","seem","send","send back","sentiment","setup","shameful","sharp","shining","shiv","shock","shorten","show","show up","sickness","sight","skimpy","slander","slapdash","slushy","small","smooch","snatch","sneaky","so","sociable","somebody","sort","sort of","so-so","sot","sourness","speech","speed","spread","spud","stab","start","stick","stickup","stint","stipend","stop","story","strong","stuff","surround","swamp","swap","sweat","swing","tactful","take on","takeoff","tasty","teach","tell","thing","think","timeless","times","tip","tired","tomb","too","totally","touching","trim","trip","truthful","try","tune","unchangeable","understanding","unhappy","unruly","unselfishness","upset","uptight","use","various","very","want","watch","wealthy","whole","willing","wisecrack","wordy","workable","worry","worse","wrong","yardstick"};
+	
+	public InformalWords(){
+		this.targetWordList = Arrays.asList(this.targetWords);
 	}
-
-	@Override
-	public void setTargetWordList() throws IOException {
-		this.targetWordList = FeatureBuilder.getFeature("InformalWords");
-	}
-
 }
