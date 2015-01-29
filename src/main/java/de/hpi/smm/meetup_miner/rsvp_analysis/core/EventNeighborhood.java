@@ -34,6 +34,16 @@ public class EventNeighborhood {
 		}
 	}
 	
+	public Event getHighestWeightedNeighbor() {
+		EventInfo highest = null;
+		for (EventInfo eventInfo : eventInfos) {
+			if (highest == null ||  highest.weight < eventInfo.weight) {
+				highest = eventInfo;
+			}
+		}
+		return highest.event;
+	}
+	
 	public List<Pair<Event, Double>> getEventWeightPairs() {
 		List<Pair<Event, Double>> list = new ArrayList<>();
 		for (EventInfo eventInfo : eventInfos) {

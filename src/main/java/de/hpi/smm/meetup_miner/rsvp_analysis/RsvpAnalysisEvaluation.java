@@ -12,6 +12,7 @@ import de.hpi.smm.meetup_miner.db.DatabaseConnector;
 import de.hpi.smm.meetup_miner.db.EventLoader;
 import de.hpi.smm.meetup_miner.db.GroupIdLoader;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
+import de.hpi.smm.meetup_miner.rsvp_analysis.core.EventNeighborhood;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.ExpectedMemberLoyality;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.ExpectedSize;
 import de.hpi.smm.meetup_miner.rsvp_analysis.features.MemberLoyality;
@@ -48,7 +49,7 @@ public class RsvpAnalysisEvaluation {
 						}
 					}
 					List<Event> events = filterPastEvents(eventLoader.load(Integer.toString(groupId)));
-					if (events.size() < 2) {
+					if (events.size() < 3) {
 						continue;
 					}
 					
@@ -56,6 +57,7 @@ public class RsvpAnalysisEvaluation {
 		    		events.remove(predictionEvent);
 		    		Event secondLatestEvent = getLatestEvent(events);
 		    		double secondLatestTimeDiff = (predictionEvent.getTime() - secondLatestEvent.getTime()) / 1000.0 / 3600.0 / 24.0;
+		    		Event heighestWeightedEvent = (new EventNeighborhood(predictionEvent, events)).getHighestWeightedNeighbor();
 		    		
 					if (secondLatestTimeDiff < 0.0001) {
 						continue;
@@ -71,11 +73,12 @@ public class RsvpAnalysisEvaluation {
 		    		double actualSize = predictionEvent.getYesRsvpCount();
 		    		double actualLoyality = (new MemberLoyality()).forEvent(predictionEvent, events);
 		    		double actualTrend = (predictionEvent.getYesRsvpCount() - secondLatestEvent.getYesRsvpCount()) / secondLatestTimeDiff;
+		    		double actualTrendWeighted = (predictionEvent.getYesRsvpCount() - heighestWeightedEvent.getYesRsvpCount()) / secondLatestTimeDiff;
 		    		
 		    		List<Double> values = ImmutableList.of(
 		    				expectedSize, actualSize,
 		    				expectedMemberLoyality, actualLoyality,
-		    				expectedTrend, expectedTrendWeighted, actualTrend);
+		    				expectedTrend, expectedTrendWeighted, actualTrend, actualTrendWeighted);
 		    		
 		    		storeEvaluationResult(values, groupId);
 				}
@@ -100,16 +103,16 @@ public class RsvpAnalysisEvaluation {
 			try {
 				String query = "UPSERT Event_Predictions_Evaluation" +
 						"(group_id, size_prediction, size_actual, loyality_prediction, " +
-						"loyality_actual, trend_prediction, trend_prediction_weighted, trend_actual)" +
-						"VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
+						"loyality_actual, trend_prediction, trend_prediction_weighted, trend_actual, trend_actual_weighted)" +
+						"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)" +
 						"WHERE group_id = ?";
 				stmt = connection.prepareStatement(query);
 				
 				stmt.setInt(1, groupId);
-				for (int i = 0; i < 7; i++) {
+				for (int i = 0; i < values.size(); i++) {
 					stmt.setDouble(i + 2, values.get(i));
 				}
-				stmt.setInt(9, groupId);
+				stmt.setInt(values.size() + 2, groupId);
 				stmt.execute();
 			}catch (SQLException e) {
 				e.printStackTrace();
