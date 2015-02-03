@@ -8,15 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hpi.smm.meetup_miner.db.AllGroupIdLoader;
 import de.hpi.smm.meetup_miner.db.DatabaseConnector;
 import de.hpi.smm.meetup_miner.db.EventLoader;
-import de.hpi.smm.meetup_miner.db.GroupIdLoader;
 import de.hpi.smm.meetup_miner.rsvp_analysis.RsvpAnalysisMain;
 import de.hpi.smm.meetup_miner.rsvp_analysis.core.Event;
 
 public class TextAnalyzer {
-	
-	private static final String CITY = "chicago";
 	
 	private Connection connection;
 	private HashMap<String, Integer> id2rownumber = new HashMap<>();
@@ -29,14 +27,14 @@ public class TextAnalyzer {
 		Connection connection = null;
 		try {
 			connection = DatabaseConnector.getNewConnection();
-			GroupIdLoader groupLoader = new GroupIdLoader(connection);
+			AllGroupIdLoader groupLoader = new AllGroupIdLoader(connection);
 			EventLoader eventLoader = new EventLoader(connection);
 			TextAnalyzer analyzer = new TextAnalyzer(connection);
 			
 			analyzer.setupRowNumbers();
 			int current = 1;
 			
-			for (Integer groupId : groupLoader.load(CITY)) {
+			for (Integer groupId : groupLoader.load()) {
 				List<Event> allEventz = eventLoader.load(Integer.toString(groupId));
 				List<Event> allEvents = new ArrayList<>();
 				RsvpAnalysisMain.splitEvents(allEventz, new ArrayList<Event>(), allEvents);
