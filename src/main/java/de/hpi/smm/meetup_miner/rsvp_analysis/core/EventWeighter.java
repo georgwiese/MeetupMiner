@@ -15,6 +15,7 @@ public class EventWeighter {
 
 	public static final long HALF_TIME_DAY = 24L * 60L * 60L * 1000L;
 	public static final long HALF_TIME_MONTH = 30L * HALF_TIME_DAY;
+	public static final long HALF_TIME_TWO_MONTHS = 2 * HALF_TIME_MONTH;
 	public static final long HALF_TIME_6MONTHS = 6L * HALF_TIME_MONTH;
 	public static final long HALF_TIME_YEAR = 365L * HALF_TIME_DAY;
 	
